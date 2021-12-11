@@ -6,6 +6,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import securitydemo.handle.CustomAuthenticationFailureHandler;
+import securitydemo.handle.CustomAuthenticationSuccessHandler;
 
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -23,10 +25,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // 自定义登陆页面
                 .loginPage("/login.html")
                     // 登陆后跳转页面，必须为POST请求
-                    .successForwardUrl("/toMain")
+//                    .successForwardUrl("/toMain")
+                    //  自定义登录成功后处理器，不能和successForwardUrl共用
+                .successHandler(new CustomAuthenticationSuccessHandler("http://192.168.43.213:5500/"))
                         // 登录失败跳转请求 必须POST请求
-                        .failureForwardUrl("/toError");
-
+//                        .failureForwardUrl("/toError");
+                //  自定义登录失败后处理器，不能和failureForwardUrl共用
+                .failureHandler(new CustomAuthenticationFailureHandler("http://www.baidu.com"));
         // 授权认证
         http.authorizeRequests()
                 // 放行login.html
