@@ -1,5 +1,6 @@
 package securitydemo.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -7,11 +8,15 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import securitydemo.handle.CustomAccessDeniedHandler;
 import securitydemo.handle.CustomAuthenticationFailureHandler;
 import securitydemo.handle.CustomAuthenticationSuccessHandler;
 
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Autowired
+    private CustomAccessDeniedHandler customAccessDeniedHandler;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -42,9 +47,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET,"/roles").hasAnyRole("bc")
                 .antMatchers("/ip").hasIpAddress("192.168.196.54")
                 // 所有请求都必须被认证
-                .anyRequest().authenticated();
+//                .anyRequest().authenticated();
+        .anyRequest().access("@myServiceImpl.hasPermission(request,authentication)");
 
         http.csrf().disable();
+
+        http.exceptionHandling()
+                .accessDeniedHandler(customAccessDeniedHandler);
     }
 
     @Bean
