@@ -1,5 +1,7 @@
 package securitydemo.controller;
 
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,6 +39,9 @@ public class LoginController {
 
     @GetMapping("/roles")
     @ResponseBody
+//    @Secured("ROLE_abc")
+    // PreAuthorize允许以ROLE_开头也可以不用ROLE_开头  均可
+    @PreAuthorize("hasAnyRole('abc')")
     public String roles(){
         return "roles";
     }
