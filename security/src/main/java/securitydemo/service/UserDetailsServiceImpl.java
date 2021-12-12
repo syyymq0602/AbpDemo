@@ -21,6 +21,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             throw new UsernameNotFoundException("用户名不存在");
         }
         var password = passwordEncoder.encode("123");
-        return new User(username,password, AuthorityUtils.commaSeparatedStringToAuthorityList("admin,normal"));
+        return new User(username,password, AuthorityUtils.commaSeparatedStringToAuthorityList("admin,normal,ROLE_abc"));
     }
 }
