@@ -1,5 +1,6 @@
 package com.example.jjwt;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -32,6 +33,21 @@ public class JjwtApplicationTests {
         System.out.println(Base64Codec.BASE64.decodeToString(tokens[1]));
         // 无法解密 => 乱码
         System.out.println(Base64Codec.BASE64.decodeToString(tokens[2]));
+    }
+
+    @Test
+    public void testParseToken(){
+        var token = "eyJhbGciOiJIUzI1NiJ9." +
+                "eyJqdGkiOiI4ODg4Iiwic3ViIjoiUm9zZSIsImlhdCI6MTYzOTM5OTM0Nn0." +
+                "0hZbfBCJvm_lVbId3naDez0j6xisp2Uq_oJ6kWC8GyU";
+        // 解析Token获取负载中声明的对象
+        Claims claims = Jwts.parser()
+                .setSigningKey("1111")
+                .parseClaimsJws(token)
+                .getBody();
+        System.out.println("id:"+claims.getId());
+        System.out.println("subject:"+claims.getSubject());
+        System.out.println("issuedAt:"+claims.getIssuedAt());
     }
 
 }
