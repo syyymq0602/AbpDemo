@@ -7,8 +7,6 @@ import org.springframework.security.oauth2.config.annotation.configurers.ClientD
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 
-import javax.annotation.Resource;
-
 @Configuration
 @EnableAuthorizationServer
 public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
@@ -27,7 +25,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 // 配置client-secret
                 .secret(passwordEncoder.encode("112233"))
                 // 配置访问token有效期
-                .accessTokenValiditySeconds(3600)
+//                .accessTokenValiditySeconds(3600)
                 // 配置授权成功后跳转
                 .redirectUris("http://www.baidu.com")
                 // 配置申请的权限范围
