@@ -40,8 +40,8 @@ public class JjwtApplicationTests {
     public void testParseToken(){
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         var token = "eyJhbGciOiJIUzI1NiJ9." +
-                "eyJqdGkiOiI4ODg4Iiwic3ViIjoiUm9zZSIsImlhdCI6MTYzOTQwMTI4MiwiZXhwIjoxNjM5NDAxMzQyfQ." +
-                "IG1EPfnO_4VC7YgnC9-JOZ3LOAbQfH6Knqk5xuQINq8";
+                "eyJqdGkiOiI4ODg4Iiwic3ViIjoiUm9zZSIsImlhdCI6MTYzOTQwMTcxMiwicm9sZXMiOiJhZG1pbiIsImxvZ28iOiJ4eHguanBnIn0." +
+                "Ymf94GxUXnn_3w05c15h-9E5prPc61YGarDI9aAAcbU";
         // 解析Token获取负载中声明的对象
         Claims claims = Jwts.parser()
                 .setSigningKey("1111")
@@ -51,7 +51,9 @@ public class JjwtApplicationTests {
         System.out.println("subject:"+claims.getSubject());
         System.out.println("issuedAt:"+claims.getIssuedAt());
         System.out.println("签发时间:"+simpleDateFormat.format(claims.getIssuedAt()));
-        System.out.println("过期时间:"+simpleDateFormat.format(claims.getExpiration()));
+//        System.out.println("过期时间:"+simpleDateFormat.format(claims.getExpiration()));
+        System.out.println("roles:" + claims.get("roles"));
+        System.out.println("roles:" + claims.get("logo"));
     }
 
     /**
@@ -73,6 +75,35 @@ public class JjwtApplicationTests {
                 // 配置加密算法和盐
                 .signWith(SignatureAlgorithm.HS256,"1111")
                 .setExpiration(new Date(exp));
+        String token = jwtBuilder.compact();
+        System.out.println(token);
+        System.out.println("=============");
+        String[] tokens = token.split("\\.");
+        System.out.println(Base64Codec.BASE64.decodeToString(tokens[0]));
+        System.out.println(Base64Codec.BASE64.decodeToString(tokens[1]));
+        // 无法解密 => 乱码
+        System.out.println(Base64Codec.BASE64.decodeToString(tokens[2]));
+    }
+
+    /**
+     * 创建Token（自定义申明）
+     */
+    @Test
+    public void textCreateTokenByClaims() {
+        JwtBuilder jwtBuilder = Jwts.builder()
+                // 声明的标识 { “jti":"8888” }
+                .setId("8888")
+                // 主体 用户 { “sub":"Rose" }
+                .setSubject("Rose")
+                // 创建日期 { “ita":"xxxx" }
+                .setIssuedAt(new Date())
+                // 配置加密算法和盐
+                .signWith(SignatureAlgorithm.HS256,"1111")
+                // 自定义申明
+                .claim("roles","admin")
+                .claim("logo","xxx.jpg");
+                // 直接传入map
+//                .addClaims()
         String token = jwtBuilder.compact();
         System.out.println(token);
         System.out.println("=============");
