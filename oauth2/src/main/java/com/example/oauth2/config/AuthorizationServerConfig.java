@@ -9,6 +9,7 @@ import org.springframework.security.oauth2.config.annotation.configurers.ClientD
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
+import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 
@@ -41,7 +42,10 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 .withClient("admin")
                 .secret(passwordEncoder.encode("112233"))
                 .accessTokenValiditySeconds(3600)
-                .redirectUris("http://www.baidu.com")
+                .refreshTokenValiditySeconds(3600)
+                .redirectUris("http://localhost:8082/login")
+                // 自动授权
+                .autoApprove(true)
                 .scopes("all")
                 .authorizedGrantTypes("authorization_code","password","refresh_token");
     }
@@ -58,5 +62,15 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 .userDetailsService(userDetailsService)
                 .tokenStore(tokenStore)
                 .accessTokenConverter(jwtAccessTokenConverter);
+    }
+
+    /**
+     * 获取密钥需要身份验证，使用单点登录必须配置
+     * @param security
+     * @throws Exception
+     */
+    @Override
+    public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
+        security.tokenKeyAccess("isAuthenticated()");
     }
 }

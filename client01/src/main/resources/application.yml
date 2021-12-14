@@ -1,0 +1,19 @@
+server:
+  port: 8082
+
+oauth2-server-url:
+  http://localhost:8081
+
+security:
+  oauth2:
+    client:
+      client-id: admin
+      client-secret: 112233
+      user-authorization-uri: ${oauth2-server-url}/oauth/authorize
+      access-token-uri: ${oauth2-server-url}/oauth/token
+    resource:
+      jwt:
+        key-uri: ${oauth2-server-url}/oauth/token_key
+
+
+
