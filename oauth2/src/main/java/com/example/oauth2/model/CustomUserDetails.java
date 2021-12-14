@@ -1,18 +1,23 @@
-package com.example.oauth2.pojo;
+package com.example.oauth2.model;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-public class User implements UserDetails {
+public class CustomUserDetails implements UserDetails {
 
     private String username;
     private String password;
-    private List<GrantedAuthority> authorities;
+    private String authorities;
 
-    public User(String username, String password, List<GrantedAuthority> authorities) {
+    public CustomUserDetails() {
+    }
+
+    public CustomUserDetails(String username, String password, String authorities) {
         this.username = username;
         this.password = password;
         this.authorities = authorities;
@@ -20,7 +25,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
+        return Stream.of(authorities.split(",")).map(SimpleGrantedAuthority::new).collect(Collectors.toList());
     }
 
     @Override
